@@ -1,0 +1,557 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body
+{
+    background: #b6bfc7;
+    overflow: hidden;
+    font-family: blackops;
+}
+
+@font-face {
+    font-family: blackops;
+    src: url(./fonts/BlackOpsOne-Regular.ttf); 
+}
+
+@font-face {
+    font-family: roboto;
+    src: url(./fonts/Roboto-Light.ttf);
+}
+
+.webgl
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: -2;
+}
+
+.placeholder
+{
+    display: block;
+    width: 20px;
+    height: 30px;
+    font-size: 20px;
+    border-radius: 6px;
+    padding-left: 35px;
+    margin: 16px 6px;
+    float: left;
+}
+
+.username-field
+{
+    display: block;
+    width: 200px;
+    height: 30px;
+    font-size: 20px;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    padding-left: 5px;
+    margin: 12px 6px;
+    float: right;
+}
+
+#connect-button-wrapper 
+{
+    position: absolute;
+    top: 250px;
+    left: calc(50% - 150px);
+    z-index: 5;
+}
+
+.button 
+{
+    width: 300px;
+    height: 60px;
+    font-size: 40px;
+    background-color: #252323;
+    color: white;
+    border: 3px solid black;
+    border-radius: 6px;
+    margin: 8px 6px;
+    font-weight: 250;
+    letter-spacing: 0.15em;
+    font-family: blackops;
+    z-index: 5;
+}
+
+.button:hover 
+{
+    background-color: #a1a3b4;
+    border-color: rgb(70, 70, 71);
+}
+
+#spawn-button-wrapper 
+{
+    display: none;
+    position: absolute;
+    left: 0;
+    width: 300px;
+    height: 100%;
+}
+
+#spawn-button
+{
+    position: relative;
+    margin-top: 50%;
+    margin-left: 50px;
+    width: 200px;
+    height: 40px;
+    font-size: 26px;
+}
+
+#respawn-button-wrapper
+{
+    display: none;
+    position: absolute;
+    left: 30%;
+    width: 350px;
+	height: 190px;
+    /* background-color: rgb(250, 237, 233); */
+    margin-top: 5px;
+    border-radius: 10px;
+    /* border: 4px solid rgb(136, 111, 111); */
+}
+
+#respawn-button
+{
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 40%;
+    height: 40px;
+    margin-left: 30%;
+    margin-right: 30%;
+    font-size: 20px;
+}
+
+.respawn-text
+{
+    position: relative;
+    text-align: center;
+    margin-top: 32%;
+    margin-bottom: 1%;
+}
+
+#leaderboard {
+    display: block;
+    position: absolute;
+	width: 200px;
+	height: 250px;
+    right: 0;
+    top: 0;
+    padding: 15px;
+    letter-spacing: 0.05em;
+}
+
+.leaderboard-title
+{
+    text-align: center;
+    color: white;
+    letter-spacing: 0.15em;
+    font-weight: 1000;
+}
+
+.leaderboard-row,
+.leaderboard-row-out
+{
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 20px;
+	border: 1px solid rgb(124 124 120 / 80%);
+    border-radius: 3px;
+    background-color: rgb(175 175 175 / 80%);
+    color: white;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    font-family: roboto;
+}
+
+.leaderboard-row-out
+{
+	opacity: 40%;
+}
+
+.leaderboard-name 
+{
+	position: relative;
+	display: inline-block;
+	line-height: 20px;
+	width: 73%;
+    margin-left: 2%;
+}
+
+.leaderboard-score 
+{
+	position: relative;
+	display: inline-block;
+    text-align: right;
+	width: 23%;
+    margin-right: 2%;
+}
+
+.weapon-selection
+{
+    position: relative;
+    margin-left: 30px;
+    margin-top: 5px;
+    z-index: 10
+}
+
+.weapon-selection-respawn  
+{
+    position: absolute;
+    list-style-type: none;
+    left: 15px;
+    bottom: 80px;
+    z-index: 10;
+}
+
+.weapon-select-button{
+    display: flex;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.weapon-select-button-respawn
+{
+    display: inline-block;
+}
+
+input[id^="weapon-checkbox"] 
+{
+    opacity: 0;
+    width: 85px;
+    height: 70px;
+}
+
+input[id^="weapon-checkbox0"] 
+{
+    position: absolute;
+    left: 10px;
+    z-index: 10;
+}
+
+.weapon-select-button label,
+.weapon-select-button-respawn label
+{
+    display: block;
+    position: relative;
+    background-color: #a1a3b4;
+    border: 2px solid #fff;
+    height: 60px;
+    width: 70px;
+    padding: 5px;
+    margin: 10px;
+    user-select: none;
+}
+
+.weapon-select-button img,
+.weapon-select-button-respawn img
+{
+    height: 60px;
+    width: 70px;
+}
+
+:checked+label 
+{
+    border-color: #ddd;
+}
+
+:checked+label img 
+{
+    transform: scale(0.9);
+    box-shadow: 0 0 5px #333;
+    /* z-index: 10; */
+}
+
+#health-bar 
+{
+    display: none;
+    position: absolute;
+    
+    width: 400px;
+    height: 70px;
+    padding: 5px;
+    background-color: rgba(170, 163, 163, 0.5); 
+    /* border-radius: 5px; */
+    left: 30px;
+    bottom: 20px;
+}
+
+#plus
+{
+    position: absolute;
+    left: 30px;
+    bottom: 10px;
+    color: #fff;
+    font-size: 45px;
+    font-family: Impact;
+    font-weight: 900;
+}
+
+#bar 
+{
+    position: absolute;
+    background: #1ce490;
+    bottom: 20px;
+    left: calc(25% - 20px);
+    width: 75%;
+    height: 30px;
+    transform: skew(-20deg);
+    mix-blend-mode: hard-light;
+
+    transition: width .5s linear;
+}
+
+.divider-stripe
+{
+    position: absolute;
+    display: block;
+    height: 100%;
+    width: 6px;
+    background: gray;
+}
+
+#div-stripe-1
+{
+    left: 72px;
+}
+#div-stripe-2
+{
+    left: 147px;
+}
+#div-stripe-3
+{
+    left: 223px;
+}
+
+
+#bar-shadow
+{
+    background: rgb(187, 187, 187);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0px;
+
+    transition: width .5s linear;
+}
+
+#health-number
+{
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    font-size: 15px;
+}
+
+#weapon-stats
+{
+    display: none;
+    position: absolute;
+    width: 250px;
+    bottom: 20px;
+    right: 50px;
+    color: #fff;
+    text-align: right;
+}
+
+#reload
+{
+    content: '';
+    font-size: 40px;
+}
+
+#reloading
+{
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    font-size: 15px;
+    animation: fadein 1s infinite alternate;
+}
+
+@keyframes fadein 
+{
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fadeout 
+{
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+@keyframes scalein 
+{
+    from { scale: 1.2 }
+    to { scale : 1 }
+}
+
+#reload-time
+{
+    display: none;
+    position: absolute;
+    width: 100px;
+    left: calc(50% - 50px);
+    top: calc(50% + 120px);
+    text-align: center;
+    color: #fff;
+}
+
+#kill-message-wrapper
+{
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100px;
+    height: 200px;  
+}
+
+.kill-message-text
+{
+    display: inline;
+    font-family: roboto;
+    font-weight: 1000;
+    /* opacity: 0.9; */
+}
+
+#scope
+{
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #000;
+    mix-blend-mode: hard-light;
+    animation: fadein .2s, scalein .2s;
+}
+
+#scope-circle
+{
+    display: block;
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    left: calc(50% - 160px);
+    top: calc(50% - 160px);
+    background-color: grey;
+    border-radius: 100%;
+    box-shadow: 0 0 10px 10px grey;
+}
+
+#scope-vertical
+{
+    display: block;
+    position: absolute;
+    height: 400px;
+    width: 2px;
+    background-color: black;
+    left: calc(50% - 1px);
+    top: calc(50% - 200px);
+}
+
+#scope-horizontal
+{
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 400px;
+    background-color: black;
+    left: calc(50% - 200px);
+    top: calc(50% - 1px);
+}
+
+@keyframes slideUpDownOut 
+{
+    0%
+    {
+        height: 50%
+    }
+    3% 
+    {
+        height: calc(50% - 1px)
+    }
+    85%
+    {
+        height: calc(50% - 1px)
+    }
+    100%
+    {
+        height: 0
+    }
+}
+
+
+#loading-bar
+{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    transform: scaleX(0);
+    transform-origin: top left;
+    z-index: 31;
+    transition: transform 0.1s ease-in-out;
+}
+
+
+#loading-bar.ended
+{
+    transform: scaleX(0);
+    transform-origin: 100% 0;
+    transition: transform 0.75s ease-in-out !important;
+}
+
+#loading-bar-top
+{
+    position: absolute;
+    background-color: #000;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 30;
+    height: 50%;
+    transition-timing-function: ease-in-out;
+}
+
+#loading-bar-bottom
+{
+    position: absolute;
+    background-color: #000;
+    left: 0;
+    right: 0;
+    height: 50%;
+    bottom: 0;
+    z-index: 30;
+    transition-timing-function: ease-in-out;
+}
+
+#loading-text
+{
+    position: absolute;
+    display: block;
+    bottom: 5px;
+    align-items: flex-end;
+    color: #fff;
+    font-family: blackops;
+    font-size: 35px;
+    width: 200px;
+    margin-left: 20%;
+    padding: 15px;
+}
+
+

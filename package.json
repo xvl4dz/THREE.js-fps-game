@@ -1,0 +1,43 @@
+{
+  "name": "blastbox",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@types/dat.gui": "^0.7.12",
+    "dat.gui": "^0.7.9",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "callback": "^0.0.1",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-http-proxy": "^2.0.0",
+    "http-server": "^14.1.1",
+    "level": "^8.0.1",
+    "mime": "^3.0.0",
+    "parameters": "^0.8.1",
+    "promise": "^8.3.0",
+    "request-ip": "^3.3.0",
+    "sanitize-html": "^2.12.1",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "sqite": "^0.0.1",
+    "stats.js": "^0.17.0",
+    "three": "^0.153.0"
+  },
+  "main": "vite.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
+  }
+}

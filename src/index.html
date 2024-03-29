@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movement Test</title>
+    <link rel="stylesheet" href="./style.css">
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+          }
+        }
+      </script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js" integrity="sha512-WoO4Ih0CDOSLYafy22wZD/mcJ7k0ESLqtQsFa6zFKnEUrbtuGU+GkLtVhgt93xa2qewG5gKEC6CWlN8OaCTSVg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<body>
+  <div>
+    <canvas class="webgl"></canvas>
+  </div>
+  <div id="loading-bar-wrapper">
+    <div id="loading-bar"></div>
+    <div id="loading-bar-top">
+      <div id="loading-text">Loading</div>
+    </div>
+    <div id="loading-bar-bottom"></div>
+  </div>
+  
+  
+  <div id="connect-button-wrapper">
+    <div class="placeholder">X</div>
+    <input type="text" class="username-field" placeholder="Enter username"><br>
+    <button class="button" id="connect-button">CONNECT</button>
+  </div>
+
+  <div id="spawn-button-wrapper">
+    <button class="button" id="spawn-button">JOIN</button>
+    <ul class="weapon-selection">
+      <li class="weapon-select-button"><input type="checkbox" id="weapon-checkbox01" />
+        <label for="weapon-checkbox01"><img src="img" /></label>
+      </li>
+      <li class="weapon-select-button"><input type="checkbox" id="weapon-checkbox02" />
+        <label for="weapon-checkbox02"><img src="img" /></label>
+      </li>
+      <li class="weapon-select-button"><input type="checkbox" id="weapon-checkbox03" />
+        <label for="weapon-checkbox03"><img src="img" /></label>
+      </li>
+    </ul>
+  </div>
+  <div id="respawn-button-wrapper">
+    <ul class="weapon-selection-respawn">
+      <li class="weapon-select-button-respawn"><input type="checkbox" id="weapon-checkbox11" />
+        <label for="weapon-checkbox11"><img src="img" /></label>
+      </li>
+      <li class="weapon-select-button-respawn"><input type="checkbox" id="weapon-checkbox12" />
+        <label for="weapon-checkbox12"><img src="img" /></label>
+      </li>
+      <li class="weapon-select-button-respawn"><input type="checkbox" id="weapon-checkbox13" />
+        <label for="weapon-checkbox13"><img src="img" /></label>
+      </li>
+    </ul>
+    <div class="respawn-text">Kill Message</div>
+    <button class="button" id="respawn-button">RESPAWN</button>
+  </div>
+
+  <div id="leaderboard">
+    <!-- <div class="leaderboard-title">Leaderboard</div>  -->
+  </div>
+
+
+  <div id="health-bar" >
+    <div id="plus">+</div>
+    <div id="bar">
+      <div class="divider-stripe" id="div-stripe-1"></div>
+      <div class="divider-stripe" id="div-stripe-2"></div>
+      <div class="divider-stripe" id="div-stripe-3"></div>
+      <div id="bar-shadow"></div>
+      <div id="health-number">health</div>
+    </div>
+  </div>
+
+  <div id="weapon-stats">
+    <div id="reloading">reloading . . .</div>
+    <div id="reload">ammo / magsize</div>
+  </div>
+  
+  <div id="reload-time">1.00 sec</div>
+
+  <div id="kill-message-wrapper"></div>
+
+  <div id="scope">
+    <div id="scope-circle"></div>
+    <div id="scope-vertical"></div>
+    <div id="scope-horizontal"></div>
+  </div>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
