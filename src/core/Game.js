@@ -205,7 +205,7 @@ class Game {
 
     this.speedMultiplier = 1
     if (this.moveBackward && !this.moveForward) {
-      this.speedMultiplier = 0.4
+      this.speedMultiplier = 0.75
     }
     
     if (this.moveForward || this.moveBackward) {
@@ -215,9 +215,9 @@ class Game {
       this.velocity.x -= this.direction.x * this.player.speed * deltaTime * this.speedMultiplier
     }
     if(this.isJumping && this.velocity.y === 0) {
-      this.velocity.y += 25
+      this.velocity.y += this.player.jump
     }
-    this.velocity.y -= 50 * deltaTime
+    this.velocity.y -= 42 * deltaTime
     
     this.velocity.z -= this.velocity.z * 10 * deltaTime
     this.velocity.x -= this.velocity.x * 10 * deltaTime
@@ -246,45 +246,39 @@ class Game {
 
   fixForBoxCollisions = () => {
     for (let element of this.collidableObjects) {
+      const positionObjectSpace = element.object.WorldToLocal(this.camera.position)
       if (
-        this.camera.position.z + this.player.width > element.znegative && 
-        this.camera.position.z - this.player.width < element.zpositive && 
-        this.camera.position.x + this.player.width > element.xnegative && 
-        this.camera.position.x - this.player.width < element.xpositive &&
-        this.camera.position.y - this.player.height < element.top && 
-        this.camera.position.y > element.bottom
+        Math.abs(positionObjectSpace.x) + this.player.width < element.x &&
+        Math.abs(positionObjectSpace.z) + this.player.width < element.z &&
+        positionObjectSpace.y - this.player.height < element.y &&
+        positionObjectSpace.y > - element.y
       ) {
         switch (
           Math.min(
-            this.camera.position.z + this.player.width - element.znegative ,
-            - this.camera.position.z + this.player.width + element.zpositive , 
-            this.camera.position.x + this.player.width - element.xnegative ,
-            - this.camera.position.x + this.player.width + element.xpositive ,
-            - this.camera.position.y + this.player.height + element.top ,
-            this.camera.position.y - element.bottom 
+            positionObjectSpace
           )
         ) {
-          case (this.camera.position.z + this.player.width - element.znegative):
-            this.camera.position.z = element.znegative - this.player.width
-          break
-          case (- this.camera.position.z + this.player.width + element.zpositive):
-            this.camera.position.z = element.zpositive + this.player.width
-          break
-          case (this.camera.position.x + this.player.width - element.xnegative):
-            this.camera.position.x = element.xnegative - this.player.width
-          break
-          case (- this.camera.position.x + this.player.width + element.xpositive):
-            this.camera.position.x = element.xpositive + this.player.width
-          break
-          case (- this.camera.position.y + this.player.height + element.top):
-            this.camera.position.y = element.top + this.player.height
-            this.isJumping = false
-            this.velocity.y = 0
-          break
-          case (this.camera.position.y - element.bottom):
-            this.camera.position.y = element.bottom - 0.05
-            this.velocity.y *= -0.6
-          break
+          // case (this.camera.position.z + this.player.width - element.znegative):
+          //   this.camera.position.z = element.znegative - this.player.width
+          // break
+          // case (- this.camera.position.z + this.player.width + element.zpositive):
+          //   this.camera.position.z = element.zpositive + this.player.width
+          // break
+          // case (this.camera.position.x + this.player.width - element.xnegative):
+          //   this.camera.position.x = element.xnegative - this.player.width
+          // break
+          // case (- this.camera.position.x + this.player.width + element.xpositive):
+          //   this.camera.position.x = element.xpositive + this.player.width
+          // break
+          // case (- this.camera.position.y + this.player.height + element.top):
+          //   this.camera.position.y = element.top + this.player.height
+          //   this.isJumping = false
+          //   this.velocity.y = 0
+          // break
+          // case (this.camera.position.y - element.bottom):
+          //   this.camera.position.y = element.bottom - 0.05
+          //   this.velocity.y *= -0.6
+          // break
         }
       }
     }
@@ -1049,6 +1043,9 @@ class Game {
     const ambientLight = new THREE.AmbientLight( 0xffffff , 10 )
     this.scene.add(ambientLight)
 
+    const hemisphereLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 )
+    this.scene.add( hemisphereLight )
+
     const pointLight = new THREE.PointLight( 0xffffff , 1000 )
     pointLight.position.set( 10 , 10 , 10 )
     this.scene.add( pointLight )
@@ -1073,15 +1070,17 @@ class Game {
     this.scene.add(boxMesh)
     boxMesh.isTarget = false
     this.collidableObjects.push({
-      xnegative: x - l/2,
-      xpositive: x + l/2,
-      top: y + h/2,
-      bottom: y - h/2,
-      zpositive: z + w/2,
-      znegative: z - w/2,
+      object: boxMesh,
+      x: l/2,
+      y: h/2,
+      z: w/2,
     })
     this.shootableObjects.push(boxMesh)
     return boxMesh
+  }
+
+  createCrate = () => {
+
   }
 
   initSkybox() {
@@ -1104,8 +1103,8 @@ class Game {
     this.player = {
       width: 0.5,
       height: 2,
-      speed: 75,
-      jump: 17.5,
+      speed: 50,
+      jump: 15,
       feet: null,
       body: null,
       id: null,
@@ -1347,14 +1346,26 @@ class Game {
 
   initModels = () => {
     const loader = new GLTFLoader(this.loadingManager)
+    this.models = {}
     loader.load( './models/Soldier-smoothattempt.glb', ( gltf ) => {
-      this.gltf = gltf
-      console.log(this.gltf.scene.children)
-      console.log(this.gltf.animations)
+      this.models.soldierGltf = gltf
+    } )
+    loader.load( './models/cargoBlue.glb', ( gltf ) => {
+      this.models.cargoB = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+    } )
+    loader.load( './models/cargoRed.glb', ( gltf ) => {
+      this.models.cargoR = gltf.scene
+    } )
+    loader.load( './models/cargoGreen.glb', ( gltf ) => {
+      this.models.cargoG = gltf.scene
+    } )
+    loader.load( './models/cargoLightGrey.glb', ( gltf ) => {
+      this.models.cargoLG = gltf.scene
     } )
     return new Promise((resolve) => {
       this.loadingManager.onLoad = () => {
-        console.log('All Loading Complete!')
+        console.log('Loaded Model!')
         setTimeout(() => {
           this.ui.loadingBar.classList.add('ended')
           this.ui.loadingBar.style.transform = ''
@@ -1594,7 +1605,7 @@ class Game {
   }
 
   initOtherPlayer = (playerID, username, score, inGame) => {
-    const gltfClone = this.cloneGltf(this.gltf)
+    const gltfClone = this.cloneGltf(this.models.soldierGltf)
     const body = gltfClone.scene
     body.scale.set(0.014,0.014,0.014)
     this.makeSkeletonCollider(body, playerID)
@@ -1924,14 +1935,14 @@ class Game {
         setTimeout(() => { 
           mainAnim.weight = i / 10
           player.activeAction.weight = 1 - i/10
-        }, i * 25)
+        }, i * 15)
       }
       setTimeout(() => {
         player.activeAction.stop()
         player.activeAction = mainAnim
         player.inCheck = false
         console.log('e')
-      }, 250)
+      }, 150)
     }
   }
 
