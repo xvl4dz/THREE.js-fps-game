@@ -10,6 +10,6 @@ status: in progress
 1. Скачать файлы и открыть в Visual Studio
 2. удалить txt файл в node_modules
 3. открыть консоль (ctrl + J)
-4. написать:   __npm install__
+4. написать:    <br> __npm install__ <br>
                __node server\server.js__
 5. На любом компьютере в сети зайти в __http://localhost__
