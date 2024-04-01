@@ -12,4 +12,4 @@ status: in progress
 3. открыть консоль (ctrl + J)
 4. написать:    <br> __npm install__ <br>
                __node server\server.js__
-5. На любом компьютере в сети зайти в __http://localhost__
+5. На любом компьютере в сети зайти в __http://localhost__ (тот же комьютер) или __http://ip-address__ (другие)
