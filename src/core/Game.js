@@ -1,13 +1,8 @@
 import * as THREE from 'three'
-//import * as Stats from 'stats'
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 import Stats from 'https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.js'
-//import * as dat from 'dat.gui'
-//import { FBXLoader } from 'three/addons/loaders/FBXLoader'
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-//import { resolve } from 'promise';
+import cratePositions from './cratePositions.js'
 
 // ALT controls //
 
@@ -246,39 +241,49 @@ class Game {
 
   fixForBoxCollisions = () => {
     for (let element of this.collidableObjects) {
-      const positionObjectSpace = element.object.WorldToLocal(this.camera.position)
+      const positionObjectSpace = new THREE.Vector3().copy(this.camera.position)
+      element.object.worldToLocal(positionObjectSpace)
       if (
-        Math.abs(positionObjectSpace.x) + this.player.width < element.x &&
-        Math.abs(positionObjectSpace.z) + this.player.width < element.z &&
+        Math.abs(positionObjectSpace.x) - this.player.width < element.x &&
+        Math.abs(positionObjectSpace.z) - this.player.width < element.z &&
         positionObjectSpace.y - this.player.height < element.y &&
         positionObjectSpace.y > - element.y
       ) {
         switch (
           Math.min(
-            positionObjectSpace
+            - Math.abs(positionObjectSpace.x) + this.player.width + element.x ,
+            - Math.abs(positionObjectSpace.z) + this.player.width + element.z ,
+            - positionObjectSpace.y + this.player.height + element.y ,
+            positionObjectSpace.y + element.y
           )
         ) {
-          // case (this.camera.position.z + this.player.width - element.znegative):
-          //   this.camera.position.z = element.znegative - this.player.width
-          // break
-          // case (- this.camera.position.z + this.player.width + element.zpositive):
-          //   this.camera.position.z = element.zpositive + this.player.width
-          // break
-          // case (this.camera.position.x + this.player.width - element.xnegative):
-          //   this.camera.position.x = element.xnegative - this.player.width
-          // break
-          // case (- this.camera.position.x + this.player.width + element.xpositive):
-          //   this.camera.position.x = element.xpositive + this.player.width
-          // break
-          // case (- this.camera.position.y + this.player.height + element.top):
-          //   this.camera.position.y = element.top + this.player.height
-          //   this.isJumping = false
-          //   this.velocity.y = 0
-          // break
-          // case (this.camera.position.y - element.bottom):
-          //   this.camera.position.y = element.bottom - 0.05
-          //   this.velocity.y *= -0.6
-          // break
+          case (- Math.abs(positionObjectSpace.x) + this.player.width + element.x):
+            if (positionObjectSpace.x > 0) {
+              positionObjectSpace.x = element.x + this.player.width
+            } else {
+              positionObjectSpace.x =  - element.x - this.player.width
+            }
+            element.object.localToWorld(positionObjectSpace)
+            this.camera.position.copy(positionObjectSpace)
+          break
+          case (- Math.abs(positionObjectSpace.z) + this.player.width + element.z):
+            if (positionObjectSpace.z > 0) {
+              positionObjectSpace.z = element.z + this.player.width
+            } else {
+              positionObjectSpace.z =  - element.z - this.player.width
+            }
+            element.object.localToWorld(positionObjectSpace)
+            this.camera.position.copy(positionObjectSpace)
+          break
+          case (- positionObjectSpace.y + this.player.height + element.y):
+            this.isJumping = false
+            this.camera.position.y = element.object.position.y + element.y + this.player.height
+            this.velocity.y = 0
+          break
+          case(positionObjectSpace.y + element.y):
+            this.camera.position.y = element.object.position.y - element.y
+            this.velocity.y *= -0.6
+          break
         }
       }
     }
@@ -1040,34 +1045,47 @@ class Game {
     this.shootableObjects = []
 
     //build lights
-    const ambientLight = new THREE.AmbientLight( 0xffffff , 10 )
+    const ambientLight = new THREE.AmbientLight( 0xffffff , 0 )
     this.scene.add(ambientLight)
 
-    const hemisphereLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 )
-    this.scene.add( hemisphereLight )
+    // const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 )
+    // this.scene.add( directionalLight )
+    const directionalLight1 = new THREE.DirectionalLight( 0xffffff, 2 )
+    directionalLight1.position.set(0,100,0)
+    this.scene.add(directionalLight1)
+    const directionalLight2 = new THREE.DirectionalLight( 0xffffff, 2 )
+    directionalLight2.position.set(0,-100,0)
+    this.scene.add(directionalLight2)
+    const directionalLight3 = new THREE.DirectionalLight( 0xffffff, 2 )
+    directionalLight3.position.set(100,0,0)
+    this.scene.add(directionalLight3)
+    const directionalLight4 = new THREE.DirectionalLight( 0xffffff, 2 )
+    directionalLight4.position.set(-100,0,0)
+    this.scene.add(directionalLight4)
+    const directionalLight5 = new THREE.DirectionalLight( 0xffffff, 2 )
+    directionalLight5.position.set(0,0,100)
+    this.scene.add(directionalLight5)
+    const directionalLight6 = new THREE.DirectionalLight( 0xffffff, 2 )
+    directionalLight6.position.set(0,0,-100)
+    this.scene.add(directionalLight6)
+    
+    const concreteMap = new THREE.TextureLoader().load('textures/concrete.jpg')
+    concreteMap.wrapS = THREE.RepeatWrapping
+    concreteMap.wrapT = THREE.RepeatWrapping
+    concreteMap.repeat.set(70,70)
+    const planeMaterial = new THREE.MeshStandardMaterial({map: concreteMap})
+    const floorPlane = this.createBox(200, 5, 200, 0, -2.5 , 0, 0 , planeMaterial)
+    
+    this.scene.add(floorPlane)
 
-    const pointLight = new THREE.PointLight( 0xffffff , 1000 )
-    pointLight.position.set( 10 , 10 , 10 )
-    this.scene.add( pointLight )
-
-    //build meshes
-    const boxMaterial = new THREE.MeshPhongMaterial({ color: 0x2f2f5f })
-    this.createBox( 1 , 1 , 1 , 0 , 2 , 0 , boxMaterial )
-    this.createBox( 1 , 1 , 1 , 2 , 4 , 1 , boxMaterial )
-    this.createBox( 1 , 1 , 1 , 3 , 6 , 2 , boxMaterial )
-    this.createBox( 1 , 1 , 1 , 5 , 7 , 4 , boxMaterial )
-    this.createBox( 10 , 10 , 10 , 15 , 5 , 20 , boxMaterial )
-
-    const planeMaterial = new THREE.MeshPhongMaterial({ color: 0x5f5f5f })
-    const floorPlane = this.createBox(50, 5, 50, 0, -2.5 , 0, planeMaterial)
-
+    this.addLevel()
   }
 
-  createBox = (l, h , w, x, y, z, material) => {
+  createBox = (l, h , w, x, y, z, rotY, material) => {
     const boxGeometry = new THREE.BoxGeometry(l, h, w)
     const boxMesh = new THREE.Mesh(boxGeometry, material)
     boxMesh.position.set(x, y, z)
-    this.scene.add(boxMesh)
+    boxMesh.rotation.y = rotY
     boxMesh.isTarget = false
     this.collidableObjects.push({
       object: boxMesh,
@@ -1079,8 +1097,103 @@ class Game {
     return boxMesh
   }
 
-  createCrate = () => {
+  createContainer = (color, x, y, z, rotY) => {
+    let model
+    switch (color) {
+      case 'red':
+        model = this.models.cargoR.clone()
+      break
+      case 'green':
+        model = this.models.cargoG.clone()
+      break
+      case 'blue':
+        model = this.models.cargoB.clone()
+      break
+      case 'lightGrey':
+        model = this.models.cargoLG.clone()
+      break
+    }
+    let model_LP 
+    switch (color) {
+      case 'red':
+        model_LP = this.models.cargoR_LP.clone()
+      break
+      case 'green':
+        model_LP = this.models.cargoG_LP.clone()
+      break
+      case 'blue':
+        model_LP = this.models.cargoB_LP.clone()
+      break
+      case 'lightGrey':
+        model_LP = this.models.cargoLG_LP.clone()
+      break
+    }
+    model.rotation.y = rotY
+    model_LP.rotation.y = rotY  
 
+    const container = new THREE.LOD()
+      .addLevel(model, 0)
+      .addLevel(model_LP, 20)
+    container.position.set(x, y, z)
+    this.scene.add(container)
+    this.createBox(
+      3.85 , 4.25 , 12.35 , 
+      x , y, z , 
+      rotY , 
+      new THREE.MeshBasicMaterial()
+    )
+  }
+
+  addLevel = () => {
+    let i = 0
+    for (const element of cratePositions) {
+      i++
+      let color
+      switch (i%4) {
+        case 0:
+          color = 'red'
+        break
+        case 1:
+          color = 'green'
+        break
+        case 2:
+          color = 'lightGrey'
+        break
+        case 3:
+          color = 'blue'
+        break
+      }
+      this.createContainer( 
+        color,
+        element.x, element.y, element.z , 
+        element.rot
+      )
+    }
+    // this.crateArray()
+  }
+
+  //dev function
+  crateArray = () => {
+    new GLTFLoader().load( './models/level.glb', ( gltf ) => {
+      const level = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+      const r = []
+      level.traverse(element => {
+      if (element.name.includes('cargo')) {
+        r.push({
+          x: element.position.x * 1.75,
+          y: element.position.y * 1.75,
+          z: element.position.z * 1.75,
+          rot: parseFloat(element.name) * Math.PI / 180
+        })
+      }
+      })
+      let s = ''
+      for (let element of r) {
+        s += '{ x: ' + element.x + ', y: ' + element.y + ', z: ' + element.z + ', rot: ' + element.rot +' },\n'
+      }
+      console.log(s)
+    } )
   }
 
   initSkybox() {
@@ -1103,7 +1216,7 @@ class Game {
     this.player = {
       width: 0.5,
       height: 2,
-      speed: 50,
+      speed: 100,
       jump: 15,
       feet: null,
       body: null,
@@ -1356,12 +1469,31 @@ class Game {
     } )
     loader.load( './models/cargoRed.glb', ( gltf ) => {
       this.models.cargoR = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
     } )
     loader.load( './models/cargoGreen.glb', ( gltf ) => {
       this.models.cargoG = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
     } )
     loader.load( './models/cargoLightGrey.glb', ( gltf ) => {
       this.models.cargoLG = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+    } )
+    loader.load( './models/cargoBlueLP.glb', ( gltf ) => {
+      this.models.cargoB_LP = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+    } )
+    loader.load( './models/cargoRedLP.glb', ( gltf ) => {
+      this.models.cargoR_LP = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+    } )
+    loader.load( './models/cargoGreenLP.glb', ( gltf ) => {
+      this.models.cargoG_LP = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+    } )
+    loader.load( './models/cargoLightGreyLP.glb', ( gltf ) => {
+      this.models.cargoLG_LP = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
     } )
     return new Promise((resolve) => {
       this.loadingManager.onLoad = () => {
