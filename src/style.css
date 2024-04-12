@@ -559,7 +559,7 @@ input[id^="weapon-checkbox0"]
     padding: 15px;
 }
 
-#settings
+#settings-wrapper
 {
     display: none
 }
@@ -605,10 +605,10 @@ input[id^="weapon-checkbox0"]
     top: calc( 50% - 250px );
     background-color: #646464;
     color: white;
-    border: 4px solid rgb(47, 47, 47);
     border-radius: 12px;
     margin: 8px 6px;
     z-index: 1001;
+    text-align: center;
 }
 
 .settings-header
@@ -631,7 +631,6 @@ input[id^="weapon-checkbox0"]
 
 .settings-column
 {
-    border: 1px solid black;
     height: 300px;
     width: 150px;
     padding: 5px;
@@ -639,7 +638,7 @@ input[id^="weapon-checkbox0"]
     font-size: 15px;
 }
 
-.inverse-settings,
+.inverse-settings label,
 .graphics-settings label
 {
     display: block;
@@ -659,12 +658,22 @@ input[id^="weapon-checkbox0"]
 :checked+label
 {
     font-size: 13px;
-    background-color: rgb(153, 216, 87);
+    background-color: rgb(234, 209, 109);
 }
 
 input[type="checkbox"]
 {
     display: none;
+}
+
+#settings-exit-button
+{
+    position: absolute;
+    display: block;
+    right: 10px;
+    top: 10px;
+    width: 40px;
+    cursor: pointer;
 }
 
 
