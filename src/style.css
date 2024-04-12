@@ -64,11 +64,15 @@ body
     z-index: 5;
 }
 
-.button 
+#connect-button
 {
     width: 300px;
     height: 60px;
     font-size: 40px;
+}
+
+.button 
+{
     background-color: #252323;
     color: white;
     border: 3px solid black;
@@ -97,9 +101,9 @@ body
 
 #spawn-button
 {
-    position: relative;
-    margin-top: 50%;
-    margin-left: 50px;
+    position: absolute;
+    top: 10%;
+    left: 50px;
     width: 200px;
     height: 40px;
     font-size: 26px;
@@ -198,9 +202,9 @@ body
 
 .weapon-selection
 {
-    position: relative;
-    margin-left: 30px;
-    margin-top: 5px;
+    position: absolute;
+    left: 30px;
+    top: 20%;
     z-index: 10
 }
 
@@ -213,7 +217,8 @@ body
     z-index: 10;
 }
 
-.weapon-select-button{
+.weapon-select-button
+{
     display: flex;
     margin-top: 50px;
     margin-bottom: 30px;
@@ -554,4 +559,126 @@ input[id^="weapon-checkbox0"]
     padding: 15px;
 }
 
+#settings
+{
+    display: none
+}
 
+.settings-button 
+{
+    display: block;
+    position: absolute;
+    height: 30px;
+    width: 120px;
+    font-size: 15px;
+    background-color: #252323;
+    color: white;
+    border: 3px solid black;
+    border-radius: 6px;
+    margin: 8px 6px;
+    font-weight: 250;
+    letter-spacing: 0.15em;
+    font-family: blackops;
+    right: 2px;
+}
+
+.blocker
+{
+    position: absolute;
+    display: block;
+    background-color: rgb(0 0 0 / 0.5);
+    content: '';
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.settings-window
+{
+    position: absolute;
+    display: block;
+    height: 500px;
+    width: 650px;
+    left: calc( 50% - 325px );
+    top: calc( 50% - 250px );
+    background-color: #646464;
+    color: white;
+    border: 4px solid rgb(47, 47, 47);
+    border-radius: 12px;
+    margin: 8px 6px;
+    z-index: 1001;
+}
+
+.settings-header
+{
+    letter-spacing: 0.15em;
+    font-family: blackops;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 15px
+}
+
+.settings-menu
+{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    left: 30px;
+
+}
+
+.settings-column
+{
+    border: 1px solid black;
+    height: 300px;
+    width: 150px;
+    padding: 5px;
+    margin: 10px;
+    font-size: 15px;
+}
+
+.inverse-settings,
+.graphics-settings label
+{
+    display: block;
+    position: relative;
+    text-align: center;
+    background-color: #a1a3b4;
+    border: 2px solid #fff;
+    height: 20px;
+    width: 110px;
+    padding: 5px;
+    margin: 10px;
+    user-select: none;
+    /* top: -115px; */
+}
+
+
+:checked+label
+{
+    font-size: 13px;
+    background-color: rgb(153, 216, 87);
+}
+
+input[type="checkbox"]
+{
+    display: none;
+}
+
+
+/* #settings-1
+{
+
+}
+
+#settings-2
+{
+    
+}
+
+#settings-3
+{
+    
+} */
