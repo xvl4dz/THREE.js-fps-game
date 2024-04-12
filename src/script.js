@@ -5,13 +5,6 @@ const usernameField = document.querySelector('.username-field')
 const spawnButton = document.getElementById('spawn-button-wrapper')
 const respawnButton = document.getElementById('respawn-button-wrapper')
 
-const assaultField = document.getElementById('weapon-checkbox01')
-const shotgunField = document.getElementById('weapon-checkbox02')
-const sniperField = document.getElementById('weapon-checkbox03')
-
-const respawnAssaultField = document.getElementById('weapon-checkbox11')
-const respawnShotgunField = document.getElementById('weapon-checkbox12')
-const respawnSniperField = document.getElementById('weapon-checkbox13')
 
 
 assaultField.checked = true
@@ -40,6 +33,15 @@ respawnButton.querySelector('#respawn-button').addEventListener('click', () => {
     Game.respawn()
     respawnButton.style.display = 'none'
 })
+
+const assaultField = document.getElementById('weapon-checkbox01')
+const shotgunField = document.getElementById('weapon-checkbox02')
+const sniperField = document.getElementById('weapon-checkbox03')
+
+const respawnAssaultField = document.getElementById('weapon-checkbox11')
+const respawnShotgunField = document.getElementById('weapon-checkbox12')
+const respawnSniperField = document.getElementById('weapon-checkbox13')
+
 
 assaultField.addEventListener('click', (event) => {
     if(!assaultField.checked) {
@@ -105,4 +107,12 @@ respawnSniperField.addEventListener('click', (event) => {
         respawnShotgunField.checked = false
         respawnAssaultField.checked = false
     }
+})
+
+const settings = document.getElementById('settings-wrapper')
+const spawnSettingsButton = settings.getElementById('settings-button-spawn')
+const blocker = document.querySelector('.blocker')
+
+spawnSettingsButton.addEventListener('click', () => {
+    
 })
