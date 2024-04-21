@@ -3,7 +3,7 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 import Stats from 'https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import cratePositions from './cratePositions.js'
-
+//https://optimizeglb.com/
 // ALT controls //
 
 class Game {
@@ -101,7 +101,7 @@ class Game {
       this.initScene()
       this.initGui()
       this.initMap()
-      this.initSkybox()
+      // this.initSkybox()
       this.initPlayer()
       this.initStats()
       this.initControls()
@@ -487,9 +487,9 @@ class Game {
       sizeAttenuation: true
     })
     let bulletMesh = new THREE.Points(bulletGeometry, bulletMaterial)
-    bulletMesh.position.copy(this.camera.position)
+
     
-    bulletMesh.position.copy(this.camera.localToWorld(new THREE.Vector3().copy(this.gun.position)))
+    bulletMesh.position.copy(this.camera.localToWorld(new THREE.Vector3().copy(this.shooter.position)))
   
     this.scene.add(bulletMesh)
 
@@ -861,6 +861,7 @@ class Game {
     }
 
     this.scene = new THREE.Scene()
+    this.scene.background = new THREE.Color(0x87CEEB)
     // this.gui = new dat.GUI()
     // this.gui.hide()
     this.clock = new THREE.Clock()
@@ -1238,11 +1239,16 @@ class Game {
     this.player.body = new THREE.Mesh(bodyGeometry, characterMaterial)
     this.scene.add(this.player.body)
 
-    const gunGeometry = new THREE.BoxGeometry(0.1,0.2,0.75)
-    const gunMaterial = new THREE.MeshLambertMaterial({color: 0xff1f1f})
-    const gun = new THREE.Mesh(gunGeometry, gunMaterial)
+    // const gunGeometry = new THREE.BoxGeometry(0.1,0.2,0.75)
+    // const gunMaterial = new THREE.MeshLambertMaterial({color: 0xff1f1f})
+    const gun = this.models.scar
 
+    // this.camera.add(gun)
+
+    gun.scale.set(0.025,0.025,0.025)
+    gun.rotation.y = Math.PI /2
     this.camera.add(gun)
+    gun.position.set(0.2,-0.4,-0.2)
 
 
     // this.scene.add(this.loadedScar)
@@ -1256,8 +1262,15 @@ class Game {
     // this.loadedScar.position.set(2,-1,10)
     // this.loadedScar.scale.set(.001, .001, .001)
     // this.camera.add(this.loadedScar)
+
     this.gun = this.camera.children[0]
-    this.gun.position.set(0.1,-0.3,-0.5)
+
+    this.shooter = new THREE.Mesh(
+      new THREE.BoxGeometry(0.05,0.05,0.05),
+      new THREE.MeshBasicMaterial({wireframe: true, visible: false})
+    )
+    this.camera.add(this.shooter)
+    this.shooter.position.set(0.185,-0.1275,-0.67)
 
     this.player.feet.position.y -- 
     this.player.body.position.y -= 3 //hide player
@@ -1408,22 +1421,22 @@ class Game {
 
 
 
-  cloneGltf = (gltf) => { ///////////////////////////////////////////////////////////////////////////////////////from github
+  cloneGltf = (gltf) => { 
     const clone = {
       animations: gltf.animations,
       scene: gltf.scene.clone(true)
-    };
+    }
   
-    const skinnedMeshes = {};
+    const skinnedMeshes = {}
   
     gltf.scene.traverse(node => {
       if (node.isSkinnedMesh) {
-        skinnedMeshes[node.name] = node;
+        skinnedMeshes[node.name] = node
       }
-    });
-  
-    const cloneBones = {};
-    const cloneSkinnedMeshes = {};
+    })
+
+    const cloneBones = {}
+    const cloneSkinnedMeshes = {}
   
     clone.scene.traverse(node => {
       if (node.isBone) {
@@ -1431,29 +1444,29 @@ class Game {
       }
   
       if (node.isSkinnedMesh) {
-        cloneSkinnedMeshes[node.name] = node;
+        cloneSkinnedMeshes[node.name] = node
       }
-    });
+    })
   
     for (let name in skinnedMeshes) {
-      const skinnedMesh = skinnedMeshes[name];
-      const skeleton = skinnedMesh.skeleton;
-      const cloneSkinnedMesh = cloneSkinnedMeshes[name];
+      const skinnedMesh = skinnedMeshes[name]
+      const skeleton = skinnedMesh.skeleton
+      const cloneSkinnedMesh = cloneSkinnedMeshes[name]
   
       const orderedCloneBones = [];
   
-      for (let i = 0; i < skeleton.bones.length; ++i) {
-        const cloneBone = cloneBones[skeleton.bones[i].name];
-        orderedCloneBones.push(cloneBone);
+      for (let i = 0; i < skeleton.bones.length; i++) {
+        const cloneBone = cloneBones[skeleton.bones[i].name]
+        orderedCloneBones.push(cloneBone)
       }
   
       cloneSkinnedMesh.bind(
           new THREE.Skeleton(orderedCloneBones, skeleton.boneInverses),
-          cloneSkinnedMesh.matrixWorld);
+          cloneSkinnedMesh.matrixWorld)
     }
   
-    return clone;
-  }                        /////////////////////////////////////////////////////////////////////////////////////////////////////
+    return clone
+  }       
 
 
 
@@ -1493,6 +1506,10 @@ class Game {
     } )
     loader.load( './models/cargoLightGreyLP.glb', ( gltf ) => {
       this.models.cargoLG_LP = gltf.scene
+      gltf.scene.scale.set(1.75,1.75,1.75)
+    } )
+    loader.load( './models/scar.glb', ( gltf ) => {
+      this.models.scar = gltf.scene
       gltf.scene.scale.set(1.75,1.75,1.75)
     } )
     return new Promise((resolve) => {
@@ -2063,7 +2080,7 @@ class Game {
       player.inCheck = true
       mainAnim.play()
       mainAnim.weight = 0.025
-      for (let i = 10 ; i != 1; i-=0.25){
+      for (let i = 10 ; i != 1 ; i -= 0.25){
         setTimeout(() => { 
           mainAnim.weight = i / 10
           player.activeAction.weight = 1 - i/10
@@ -2073,7 +2090,6 @@ class Game {
         player.activeAction.stop()
         player.activeAction = mainAnim
         player.inCheck = false
-        console.log('e')
       }, 150)
     }
   }
