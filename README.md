@@ -15,7 +15,7 @@ status: in progress (forever) <br><br><br>
 На компьютере должен стоять Node.js (можно проверить в  cmd, используя __node -v__)
 
 1. удалить txt файл в node_modules
-2. открыть консоль (директория, где хранится проекта)
+2. открыть консоль (директория, где хранится проект)
 3.
         npm install
         node server\server.js
