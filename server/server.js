@@ -13,7 +13,7 @@ import * as path from 'path'
 
 var cache= {}
 
-const httpPort = 80
+const httpPort = 8080
 
 let appPath
 let staticDir
@@ -223,6 +223,7 @@ setInterval(() => {
     io.sockets.to(id).volatile.emit('positions', rooms[id])
   }
 }, 15)
+
 
 
 
