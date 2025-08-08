@@ -90,7 +90,7 @@ class Game {
       },
 
       (err) => {
-        console.log('An error accured while loading!')
+        console.log('An error occured while loading!')
         throw err
       }
     )
